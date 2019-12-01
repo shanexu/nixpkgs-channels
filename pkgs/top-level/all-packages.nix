@@ -1834,6 +1834,8 @@ in
 
   jellyfin = callPackage ../servers/jellyfin { ffmpeg = ffmpeg_4; };
 
+  jenv = callPackage ../tools/misc/jenv { };
+
   jotta-cli = callPackage ../applications/misc/jotta-cli { };
 
   kapacitor = callPackage ../servers/monitoring/kapacitor { };
@@ -19934,7 +19936,7 @@ in
   };
 
   matchbox = callPackage ../applications/window-managers/matchbox { };
-  
+
   matrixcli = callPackage ../applications/networking/instant-messengers/matrixcli {
     inherit (python3Packages) buildPythonApplication buildPythonPackage
       pygobject3 pytestrunner requests responses pytest python-olm
