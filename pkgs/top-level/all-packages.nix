@@ -2550,6 +2550,7 @@ in
   coreutils = callPackage ../tools/misc/coreutils { };
   coreutils-full = coreutils.override { minimal = false; };
   coreutils-prefixed = coreutils.override { withPrefix = true; singleBinary = false; };
+  coreutils-conflict-prefixed = coreutils.override { withPrefix = true; singleBinary = false; unprefixNoConflict = true; };
 
   corkscrew = callPackage ../tools/networking/corkscrew { };
 

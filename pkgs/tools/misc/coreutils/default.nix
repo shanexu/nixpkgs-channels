@@ -8,6 +8,7 @@
 , minimal ? true, withOpenssl ? !minimal, openssl ? null
 , withPrefix ? false
 , singleBinary ? "symlinks" # you can also pass "shebangs" or false
+, unprefixNoConflict ? false
 }:
 
 assert aclSupport -> acl != null;
@@ -122,6 +123,10 @@ stdenv.mkDerivation rec {
   # du: 8.7 M locale + 0.4 M man pages
   + optionalString minimal ''
     rm -r "$out/share"
+  ''
+  + optionalString (stdenv.isDarwin && withPrefix && unprefixNoConflict) ''
+    cd $out/bin
+    ${concatStringsSep "\n" (builtins.map (x: "ln -s g${x} ${x}") (splitString " " "b2sum base32 chcon hostid md5sum nproc numfmt pinky ptx realpath runcon sha1sum sha224sum sha256sum sha384sum sha512sum shred shuf stdbuf tac timeout truncate"))}
   '';
 
   meta = {
