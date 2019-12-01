@@ -71,6 +71,9 @@ in
   inherit (callPackages ../os-specific/darwin/xcode { } )
           xcode_8_1 xcode_8_2 xcode_9_1 xcode_9_2 xcode_9_4 xcode;
 
+  inherit (pkgs.callPackages ../os-specific/darwin/cltools { } )
+          Command_Line_Tools_for_Xcode_11_2 Command_Line_Tools_for_Xcode;
+
   CoreSymbolication = callPackage ../os-specific/darwin/CoreSymbolication { };
 
   CF = callPackage ../os-specific/darwin/swift-corelibs/corefoundation.nix { inherit (darwin) objc4 ICU; };
