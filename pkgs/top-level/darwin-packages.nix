@@ -45,6 +45,13 @@ in
     inherit (darwin) opencflite;
   };
 
+  mit-scheme-macos10_15-xcode11_2 = with pkgs; callPackages ../os-specific/darwin/mit-scheme {
+    texLive = texlive.combine { inherit (texlive) scheme-small; };
+    texinfo = texinfo5;
+    macosVersion = "10.15";
+    xcodeVersion = "11.2";
+  };
+
   insert_dylib = callPackage ../os-specific/darwin/insert_dylib { };
 
   iosSdkPkgs = darwin.callPackage ../os-specific/darwin/xcode/sdk-pkgs.nix {
