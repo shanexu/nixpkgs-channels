@@ -10111,6 +10111,8 @@ in
 
   libtool_2 = callPackage ../development/tools/misc/libtool/libtool2.nix { };
 
+  libtool-prefixed-static = callPackage ../development/tools/misc/libtool/glibtool.nix { withPrefix = true; static = true; };
+
   libwhich = callPackage ../development/tools/misc/libwhich { };
 
   linuxkit = callPackage ../development/tools/misc/linuxkit { };
