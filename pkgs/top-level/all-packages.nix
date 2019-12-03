@@ -4086,6 +4086,8 @@ in
 
   inetutils = callPackage ../tools/networking/inetutils { };
 
+  inetutils-conflict-prefixed = inetutils.override { withPrefix = true; unprefixNoConflict = true; };
+
   inform7 = callPackage ../development/compilers/inform7 { };
 
   infamousPlugins = callPackage ../applications/audio/infamousPlugins { };

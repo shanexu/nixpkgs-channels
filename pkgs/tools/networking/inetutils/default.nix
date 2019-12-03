@@ -1,4 +1,6 @@
-{ stdenv, lib, fetchurl, ncurses, perl, help2man }:
+{ stdenv, lib, fetchurl, ncurses, perl, help2man
+, withPrefix ? false
+, unprefixNoConflict ? false }:
 
 stdenv.mkDerivation rec {
   name = "inetutils-1.9.4";
@@ -33,13 +35,19 @@ stdenv.mkDerivation rec {
     "--disable-rsh"
     "--disable-rlogin"
     "--disable-rexec"
-  ] ++ lib.optional stdenv.isDarwin  "--disable-servers";
+  ] ++ lib.optional stdenv.isDarwin  "--disable-servers"
+  ++ lib.optional withPrefix "--program-prefix=g";
 
   # Test fails with "UNIX socket name too long", probably because our
   # $TMPDIR is too long.
   doCheck = false;
 
   installFlags = [ "SUIDMODE=" ];
+
+  postInstall = lib.optionalString unprefixNoConflict ''
+    cd $out/bin
+    ${lib.concatStringsSep "\n" (builtins.map (x: "ln -s g${x} ${x}") (lib.splitString " " "dnsdomainname rcp rexec rlogin rsh ftp telnet"))}
+  '';
 
   meta = with lib; {
     description = "Collection of common network programs";
