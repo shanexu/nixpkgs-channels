@@ -456,7 +456,7 @@ in
   findXMLCatalogs = makeSetupHook { } ../build-support/setup-hooks/find-xml-catalogs.sh;
 
   wrapGAppsHook = makeSetupHook {
-    deps = lib.optional (!stdenv.isDarwin) gnome3.dconf.lib ++ [ gtk3 librsvg makeWrapper ];
+    deps = lib.optional (!stdenv.isDarwin) dconf.lib ++ [ gtk3 librsvg makeWrapper ];
   } ../build-support/setup-hooks/wrap-gapps-hook.sh;
 
   separateDebugInfo = makeSetupHook { } ../build-support/setup-hooks/separate-debug-info.sh;
@@ -853,6 +853,8 @@ in
 
   elvish = callPackage ../shells/elvish { };
 
+  emplace = callPackage ../tools/package-management/emplace { };
+
   encryptr = callPackage ../tools/security/encryptr {
     gconf = gnome2.GConf;
   };
@@ -912,6 +914,8 @@ in
   gcsfuse = callPackage ../tools/filesystems/gcsfuse { };
 
   glyr = callPackage ../tools/audio/glyr { };
+
+  hpe-ltfs = callPackage ../tools/backup/hpe-ltfs { };
 
   httperf = callPackage ../tools/networking/httperf { };
 
@@ -1310,6 +1314,7 @@ in
   });
 
   caddy = callPackage ../servers/caddy { };
+  caddy2 = callPackage ../servers/caddy/v2.nix { };
   traefik = callPackage ../servers/traefik { };
 
   calamares = libsForQt5.callPackage ../tools/misc/calamares {
@@ -1511,6 +1516,8 @@ in
   dateutils = callPackage ../tools/misc/dateutils { };
 
   datovka = libsForQt5.callPackage ../applications/networking/datovka { };
+
+  dconf = callPackage ../development/libraries/dconf { };
 
   ddar = callPackage ../tools/backup/ddar { };
 
@@ -2440,9 +2447,7 @@ in
 
   libkkc = callPackage ../tools/inputmethods/libkkc { };
 
-  ibus = callPackage ../tools/inputmethods/ibus {
-    inherit (gnome3) dconf;
-  };
+  ibus = callPackage ../tools/inputmethods/ibus { };
 
   ibus-qt = callPackage ../tools/inputmethods/ibus/ibus-qt.nix { };
 
@@ -2463,9 +2468,7 @@ in
       protobuf = pkgs.protobuf.overrideDerivation (oldAttrs: { stdenv = clangStdenv; });
     };
 
-    table = callPackage ../tools/inputmethods/ibus-engines/ibus-table {
-      inherit (gnome3) dconf;
-    };
+    table = callPackage ../tools/inputmethods/ibus-engines/ibus-table { };
 
     table-chinese = callPackage ../tools/inputmethods/ibus-engines/ibus-table-chinese {
       ibus-table = ibus-engines.table;
@@ -2484,9 +2487,7 @@ in
     };
   };
 
-  ibus-with-plugins = callPackage ../tools/inputmethods/ibus/wrapper.nix {
-    inherit (gnome3) dconf;
-  };
+  ibus-with-plugins = callPackage ../tools/inputmethods/ibus/wrapper.nix { };
 
   interception-tools = callPackage ../tools/inputmethods/interception-tools { };
   interception-tools-plugins = {
@@ -2568,7 +2569,7 @@ in
 
   cron = callPackage ../tools/system/cron { };
 
-  cudaPackages = callPackages ../development/compilers/cudatoolkit { };
+  cudaPackages = recurseIntoAttrs (callPackage ../development/compilers/cudatoolkit {});
   inherit (cudaPackages)
     cudatoolkit_6
     cudatoolkit_6_5
@@ -3310,9 +3311,6 @@ in
   fprot = callPackage ../tools/security/fprot { };
 
   fprintd = callPackage ../tools/security/fprintd { };
-  fprintd-thinkpad = fprintd.override {
-    thinkpad = true;
-  };
 
   franz = callPackage ../applications/networking/instant-messengers/franz { };
 
@@ -5032,6 +5030,8 @@ in
 
   mt-st = callPackage ../tools/backup/mt-st {};
 
+  multitime = callPackage ../tools/misc/multitime { };
+
   multitran = recurseIntoAttrs (let callPackage = newScope pkgs.multitran; in {
     multitrandata = callPackage ../tools/text/multitran/data { };
 
@@ -5083,6 +5083,8 @@ in
   ndjbdns = callPackage ../tools/networking/ndjbdns { };
 
   ndppd = callPackage ../applications/networking/ndppd { };
+
+  nebula = callPackage ../tools/networking/nebula { };
 
   nemiver = callPackage ../development/tools/nemiver { };
 
@@ -5217,7 +5219,7 @@ in
 
   niff = callPackage ../tools/package-management/niff { };
 
-  nifskope = libsForQt59.callPackage ../tools/graphics/nifskope { };
+  nifskope = libsForQt5.callPackage ../tools/graphics/nifskope { };
 
   nilfs-utils = callPackage ../tools/filesystems/nilfs-utils {};
 
@@ -5787,6 +5789,8 @@ in
   cntlm = callPackage ../tools/networking/cntlm { };
 
   pastebinit = callPackage ../tools/misc/pastebinit { };
+
+  pmacct = callPackage ../tools/networking/pmacct { };
 
   polygraph = callPackage ../tools/networking/polygraph { };
 
@@ -6446,6 +6450,8 @@ in
 
   ssldump = callPackage ../tools/networking/ssldump { };
 
+  sslsplit = callPackage ../tools/networking/sslsplit { };
+
   sstp = callPackage ../tools/networking/sstp {};
 
   strip-nondeterminism = perlPackages.strip-nondeterminism;
@@ -6900,6 +6906,8 @@ in
   usync = callPackage ../applications/misc/usync { };
 
   uwsgi = callPackage ../servers/uwsgi { };
+
+  v2ray = callPackage ../tools/networking/v2ray { };
 
   vacuum = callPackage ../applications/networking/instant-messengers/vacuum {};
 
@@ -9901,7 +9909,7 @@ in
 
   funnelweb = callPackage ../development/tools/literate-programming/funnelweb { };
 
-  gede = libsForQt59.callPackage ../development/tools/misc/gede { };
+  gede = libsForQt5.callPackage ../development/tools/misc/gede { };
 
   gdbgui = python3Packages.callPackage ../development/tools/misc/gdbgui { };
 
@@ -12231,9 +12239,6 @@ in
   };
 
   libfprint = callPackage ../development/libraries/libfprint { };
-  libfprint-thinkpad = libfprint.override {
-    thinkpad = true;
-  };
 
   libfpx = callPackage ../development/libraries/libfpx { };
 
@@ -13097,16 +13102,6 @@ in
   # Default libGLU
   libGLU = mesa_glu;
 
-  # Combined derivation, contains both libGL and libGLU
-  # Please, avoid using this attribute.  It was meant as transitional hack
-  # for packages that assume that libGLU and libGL live in the same prefix.
-  # libGLU_combined propagates both libGL and libGLU
-  libGLU_combined = buildEnv {
-    name = "libGLU-combined";
-    paths = [ libGL libGLU ];
-    extraOutputsToInstall = [ "dev" ];
-  };
-
   mesa = callPackage ../development/libraries/mesa {
     llvmPackages = llvmPackages_9;
     inherit (darwin.apple_sdk.frameworks) OpenGL;
@@ -13546,10 +13541,7 @@ in
 
   python-qt = callPackage ../development/libraries/python-qt {
     python = python27;
-    qmake = qt59.qmake;
-    qttools = qt59.qttools;
-    qtwebengine = qt59.qtwebengine;
-    qtxmlpatterns = qt59.qtxmlpatterns;
+    inherit (qt5) qmake qttools qtwebengine qtxmlpatterns;
   };
 
   pyotherside = libsForQt5.callPackage ../development/libraries/pyotherside {};
@@ -13600,50 +13592,17 @@ in
     developerBuild = true;
   });
 
-  qt59 = recurseIntoAttrs (makeOverridable
-    (import ../development/libraries/qt-5/5.9) {
-      inherit newScope;
-      inherit stdenv fetchurl fetchpatch makeSetupHook makeWrapper;
-      bison = bison2; # error: too few arguments to function 'int yylex(...
-      inherit cups;
-      harfbuzz = harfbuzzFull;
-      inherit libGL;
-      inherit perl;
-      inherit (gst_all_1) gstreamer gst-plugins-base;
-      inherit gtk3;
-      inherit (gnome3) dconf;
-    });
-
-  libsForQt59 = lib.makeScope qt59.newScope mkLibsForQt5;
-
-  qt511 = recurseIntoAttrs (makeOverridable
-    (import ../development/libraries/qt-5/5.11) {
-      inherit newScope;
-      inherit stdenv fetchurl fetchFromGitHub fetchpatch makeSetupHook makeWrapper;
-      bison = bison2; # error: too few arguments to function 'int yylex(...
-      inherit cups;
-      harfbuzz = harfbuzzFull;
-      inherit libGL;
-      inherit perl;
-      inherit gtk3;
-      inherit (gnome3) dconf;
-      inherit (gst_all_1) gstreamer gst-plugins-base;
-      inherit llvmPackages_5;
-    });
-
-  libsForQt511 = recurseIntoAttrs (lib.makeScope qt511.newScope mkLibsForQt5);
-
   qt512 = recurseIntoAttrs (makeOverridable
     (import ../development/libraries/qt-5/5.12) {
       inherit newScope;
       inherit stdenv fetchurl fetchpatch fetchFromGitHub makeSetupHook makeWrapper;
       bison = bison2; # error: too few arguments to function 'int yylex(...
       inherit cups;
+      inherit dconf;
       inherit harfbuzz;
       inherit libGL;
       inherit perl;
       inherit gtk3;
-      inherit (gnome3) dconf;
       inherit (gst_all_1) gstreamer gst-plugins-base;
       inherit llvmPackages_5;
     });
@@ -17861,6 +17820,8 @@ in
 
   airwave = callPackage ../applications/audio/airwave { };
 
+  akira-unstable = callPackage ../applications/graphics/akira { };
+
   alembic = callPackage ../development/libraries/alembic {};
 
   alchemy = callPackage ../applications/graphics/alchemy { };
@@ -18278,7 +18239,7 @@ in
     pygments = python27Packages.pygments;
   };
 
-  csound-qt = libsForQt59.callPackage ../applications/audio/csound/csound-qt {
+  csound-qt = libsForQt5.callPackage ../applications/audio/csound/csound-qt {
     python = python27;
   };
 
@@ -19078,9 +19039,7 @@ in
 
   gmrun = callPackage ../applications/misc/gmrun {};
 
-  gnucash = callPackage ../applications/office/gnucash {
-    inherit (gnome3) dconf;
-  };
+  gnucash = callPackage ../applications/office/gnucash { };
 
   goffice = callPackage ../development/libraries/goffice { };
 
@@ -19590,7 +19549,7 @@ in
   k3d = callPackage ../applications/graphics/k3d {
     inherit (pkgs.gnome2) gtkglext;
     stdenv = gcc6Stdenv;
-    boost = boost.override { enablePython = true; };
+    boost = boost155.override { enablePython = true; };
   };
 
   k9copy = libsForQt5.callPackage ../applications/video/k9copy {};
@@ -19801,9 +19760,7 @@ in
 
   lifelines = callPackage ../applications/misc/lifelines { };
 
-  liferea = callPackage ../applications/networking/newsreaders/liferea {
-    inherit (gnome3) dconf;
-  };
+  liferea = callPackage ../applications/networking/newsreaders/liferea { };
 
   lightworks = callPackage ../applications/video/lightworks {
     portaudio = portaudio2014;
@@ -19982,9 +19939,7 @@ in
 
   mercurialFull = appendToName "full" (pkgs.mercurial.override { guiSupport = true; });
 
-  merkaartor = libsForQt59.callPackage ../applications/misc/merkaartor {
-    gdal = gdal_2; # https://github.com/openstreetmap/merkaartor/issues/179
-  };
+  merkaartor = libsForQt5.callPackage ../applications/misc/merkaartor { };
 
   meshlab = libsForQt5.callPackage ../applications/graphics/meshlab { };
 
@@ -20841,9 +20796,7 @@ in
 
   quantomatic = callPackage ../applications/science/physics/quantomatic { };
 
-  quassel = libsForQt5.callPackage ../applications/networking/irc/quassel {
-    inherit (gnome3) dconf;
-  };
+  quassel = libsForQt5.callPackage ../applications/networking/irc/quassel { };
 
   quasselClient = quassel.override {
     monolithic = false;
@@ -21715,7 +21668,6 @@ in
   virt-what = callPackage ../applications/virtualization/virt-what { };
 
   virt-manager = callPackage ../applications/virtualization/virt-manager {
-    dconf = gnome3.dconf;
     system-libvirt = libvirt;
   };
 
@@ -22394,7 +22346,11 @@ in
   clightning = callPackage ../applications/blockchains/clightning.nix { };
 
   bitcoin-abc  = libsForQt5.callPackage ../applications/blockchains/bitcoin-abc.nix { boost = boost165; withGui = true; };
-  bitcoind-abc = callPackage ../applications/blockchains/bitcoin-abc.nix { boost = boost165; withGui = false; };
+  bitcoind-abc = callPackage ../applications/blockchains/bitcoin-abc.nix {
+    boost = boost165;
+    mkDerivation = stdenv.mkDerivation;
+    withGui = false;
+  };
 
   bitcoin-unlimited  = libsForQt5.callPackage ../applications/blockchains/bitcoin-unlimited.nix {
     inherit (darwin.apple_sdk.frameworks) Foundation ApplicationServices AppKit;
@@ -22613,7 +22569,7 @@ in
   });
 
   construo = construoBase.override {
-    inherit  freeglut libGL libGLU;
+    inherit libGL libGLU freeglut;
   };
 
   crack_attack = callPackage ../games/crack-attack { };
@@ -24605,8 +24561,9 @@ in
     kops_1_12
     kops_1_13
     kops_1_14
+    kops_1_15
     ;
-  kops = kops_1_14;
+  kops = kops_1_15;
 
   lguf-brightness = callPackage ../misc/lguf-brightness { };
 
