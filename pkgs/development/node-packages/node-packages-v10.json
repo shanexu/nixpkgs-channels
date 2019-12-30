@@ -15,7 +15,6 @@
 , "bower2nix"
 , "browserify"
 , "castnow"
-, { "texlab-citeproc-build-deps": "../tools/misc/texlab/citeproc" }
 , "clean-css"
 , "coffee-script"
 , "coinmon"
@@ -103,7 +102,9 @@
 , "peerflix-server"
 , "pnpm"
 , "prettier"
+, "pscid"
 , "pulp"
+, "purescript-psa"
 , "react-native-cli"
 , "react-tools"
 , "reveal.js"
@@ -124,6 +125,7 @@
 , "swagger"
 , {"tedicross": "git+https://github.com/TediCross/TediCross.git#v0.8.7"}
 , "tern"
+, { "texlab-citeproc-build-deps": "../tools/misc/texlab/citeproc" }
 , "textlint"
 , "textlint-plugin-latex"
 , "textlint-rule-abbr-within-parentheses"

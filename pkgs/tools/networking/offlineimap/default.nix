@@ -23,7 +23,7 @@ python2Packages.buildPythonApplication rec {
   doCheck = false;
 
   nativeBuildInputs = [ asciidoc libxml2 libxslt docbook_xsl ];
-  propagatedBuildInputs = with python2Packages; [ six kerberos rfc6555 ];
+  propagatedBuildInputs = with python2Packages; [ six kerberos rfc6555 pysocks ];
 
   postInstall = ''
     make -C docs man
@@ -35,6 +35,6 @@ python2Packages.buildPythonApplication rec {
     description = "Synchronize emails between two repositories, so that you can read the same mailbox from multiple computers";
     homepage = http://offlineimap.org;
     license = stdenv.lib.licenses.gpl2Plus;
-    maintainers = with stdenv.lib.maintainers; [ endocrimes ma27 ];
+    maintainers = with stdenv.lib.maintainers; [ endocrimes ];
   };
 }
