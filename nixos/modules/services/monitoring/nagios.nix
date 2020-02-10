@@ -154,7 +154,7 @@ in
       };
 
       virtualHost = mkOption {
-        type = types.submodule (import ../web-servers/apache-httpd/per-server-options.nix);
+        type = types.submodule (import ../web-servers/apache-httpd/vhost-options.nix);
         example = literalExample ''
           { hostName = "example.org";
             adminAddr = "webmaster@example.org";
@@ -184,11 +184,7 @@ in
 
     # This isn't needed, it's just so that the user can type "nagiostats
     # -c /etc/nagios.cfg".
-    environment.etc = [
-      { source = nagiosCfgFile;
-        target = "nagios.cfg";
-      }
-    ];
+    environment.etc."nagios.cfg".source = nagiosCfgFile;
 
     environment.systemPackages = [ pkgs.nagios ];
     systemd.services.nagios = {

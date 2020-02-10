@@ -60,7 +60,7 @@ in
                   -e '/^toolBarFont=/ s/,Regular$//'
           fi
 
-          exec "${getBin plasma5.plasma-workspace}/bin/startkde"
+          exec "${getBin plasma5.plasma-workspace}/bin/startplasma-x11"
         '';
       };
 
@@ -137,6 +137,7 @@ in
           libkscreen
           libksysguard
           milou
+          plasma-browser-integration
           plasma-integration
           polkit-kde-agent
           systemsettings
@@ -183,10 +184,7 @@ in
         "/share"
       ];
 
-      environment.etc = singleton {
-        source = xcfg.xkbDir;
-        target = "X11/xkb";
-      };
+      environment.etc."X11/xkb".source = xcfg.xkbDir;
 
       # Enable GTK applications to load SVG icons
       services.xserver.gdk-pixbuf.modulePackages = [ pkgs.librsvg ];

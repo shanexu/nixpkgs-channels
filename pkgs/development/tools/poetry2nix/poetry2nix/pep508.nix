@@ -1,6 +1,7 @@
-{ lib, stdenv }: python:
+{ lib, stdenv, poetryLib }: python:
 
 let
+  inherit (poetryLib) ireplace;
 
   # Like builtins.substring but with stop being offset instead of length
   substr = start: stop: s: builtins.substring start (stop - start) s;
@@ -82,14 +83,24 @@ let
   # This function also performs variable substitution, replacing environment markers with their explicit values
   transformExpressions = exprs: let
     variables = {
-      os_name = "posix"; # TODO: Check other platforms
+      os_name = (
+        if python.pname == "jython" then "java"
+        else "posix"
+      );
       sys_platform = (
         if stdenv.isLinux then "linux"
         else if stdenv.isDarwin then "darwin"
         else throw "Unsupported platform"
       );
       platform_machine = stdenv.platform.kernelArch;
-      platform_python_implementation = "CPython"; # Only CPython supported for now
+      platform_python_implementation = let
+        impl = python.passthru.implementation;
+      in
+        (
+          if impl == "cpython" then "CPython"
+          else if impl == "pypy" then "PyPy"
+          else throw "Unsupported implementation ${impl}"
+        );
       platform_release = ""; # Field not reproducible
       platform_system = (
         if stdenv.isLinux then "Linux"
@@ -99,7 +110,7 @@ let
       platform_version = ""; # Field not reproducible
       python_version = python.passthru.pythonVersion;
       python_full_version = python.version;
-      implementation_name = "cpython"; # Only cpython supported for now
+      implementation_name = python.implementation;
       implementation_version = python.version;
       extra = "";
     };
@@ -142,7 +153,6 @@ let
       else builtins.fromJSON v
     );
     hasElem = needle: haystack: builtins.elem needle (builtins.filter (x: builtins.typeOf x == "string") (builtins.split " " haystack));
-    # TODO: Implement all operators
     op = {
       "<=" = x: y: (unmarshal x) <= (unmarshal y);
       "<" = x: y: (unmarshal x) < (unmarshal y);
@@ -150,8 +160,16 @@ let
       "==" = x: y: x == y;
       ">=" = x: y: (unmarshal x) >= (unmarshal y);
       ">" = x: y: (unmarshal x) > (unmarshal y);
-      "~=" = null;
-      "===" = null;
+      "~=" = v: c: let
+        parts = builtins.splitVersion c;
+        pruned = lib.take ((builtins.length parts) - 1) parts;
+        upper = builtins.toString (
+          (lib.toInt (builtins.elemAt pruned (builtins.length pruned - 1))) + 1
+        );
+        upperConstraint = builtins.concatStringsSep "." (ireplace (builtins.length pruned - 1) upper pruned);
+      in
+        op.">=" v c && op."<" v upperConstraint;
+      "===" = x: y: x == y;
       "in" = x: y: let
         values = builtins.filter (x: builtins.typeOf x == "string") (builtins.split " " (unmarshal y));
       in

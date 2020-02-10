@@ -115,18 +115,18 @@ self: super: builtins.intersectAttrs super {
 
   hzk = overrideCabal super.hzk (drv: {
     preConfigure = "sed -i -e /include-dirs/d hzk.cabal";
-    configureFlags =  "--extra-include-dirs=${pkgs.zookeeper_mt}/include/zookeeper";
+    configureFlags = [ "--extra-include-dirs=${pkgs.zookeeper_mt}/include/zookeeper" ];
   });
 
   haskakafka = overrideCabal super.haskakafka (drv: {
     preConfigure = "sed -i -e /extra-lib-dirs/d -e /include-dirs/d haskakafka.cabal";
-    configureFlags =  "--extra-include-dirs=${pkgs.rdkafka}/include/librdkafka";
+    configureFlags = [ "--extra-include-dirs=${pkgs.rdkafka}/include/librdkafka" ];
   });
 
   # library has hard coded directories that need to be removed. Reported upstream here https://github.com/haskell-works/hw-kafka-client/issues/32
   hw-kafka-client = dontCheck (overrideCabal super.hw-kafka-client (drv: {
     preConfigure = "sed -i -e /extra-lib-dirs/d -e /include-dirs/d -e /librdkafka/d hw-kafka-client.cabal";
-    configureFlags =  "--extra-include-dirs=${pkgs.rdkafka}/include/librdkafka";
+    configureFlags = [ "--extra-include-dirs=${pkgs.rdkafka}/include/librdkafka" ];
   }));
 
   # Foreign dependency name clashes with another Haskell package.
@@ -281,20 +281,6 @@ self: super: builtins.intersectAttrs super {
 
   # Uses OpenGL in testing
   caramia = dontCheck super.caramia;
-
-  llvm-general =
-    # Supports only 3.5 for now, https://github.com/bscarlet/llvm-general/issues/142
-    let base = super.llvm-general.override { llvm-config = pkgs.llvm_35; };
-    in if !pkgs.stdenv.isDarwin then base else overrideCabal base (
-      drv: {
-        preConfigure = ''
-          sed -i llvm-general.cabal \
-              -e 's,extra-libraries: stdc++,extra-libraries: c++,'
-        '';
-        configureFlags = (drv.configureFlags or []) ++ ["--extra-include-dirs=${pkgs.libcxx}/include/c++/v1"];
-        librarySystemDepends = [ pkgs.libcxx ] ++ drv.librarySystemDepends or [];
-      }
-    );
 
   llvm-hs =
     let llvmHsWithLlvm8 = super.llvm-hs.override { llvm-config = pkgs.llvm_8; };
@@ -695,4 +681,8 @@ self: super: builtins.intersectAttrs super {
       spagoWithoutChecks = dontCheck spagoFixHpack;
     in
     spagoWithoutChecks;
+
+  # checks SQL statements at compile time, and so requires a running PostgreSQL
+  # database to run it's test suite
+  postgresql-typed = dontCheck super.postgresql-typed;
 }

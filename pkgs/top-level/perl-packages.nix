@@ -6102,8 +6102,12 @@ let
     };
     buildInputs = [ CaptureTiny ];
     propagatedBuildInputs = [ EmailAbstract EmailAddress MooXTypesMooseLike SubExporter Throwable TryTiny ];
+    nativeBuildInputs = stdenv.lib.optional stdenv.isDarwin shortenPerlShebang;
     postPatch = ''
       patchShebangs --build util
+    '';
+    preCheck = stdenv.lib.optionalString stdenv.isDarwin ''
+      shortenPerlShebang util/sendmail
     '';
     meta = {
       homepage = https://github.com/rjbs/Email-Sender;
@@ -11242,7 +11246,7 @@ let
 
     outputs = [ "out" "dev" ]; # no "devdoc"
 
-    installTargets = "install";
+    installTargets = [ "install" ];
 
     meta = with stdenv.lib; {
       homepage = "https://www.mhonarc.org/";
@@ -14428,12 +14432,12 @@ let
     doCheck = false;
   };
 
-  PerlTidy = buildPerlPackage {
+  PerlTidy = buildPerlPackage rec {
     pname = "Perl-Tidy";
-    version = "20190915";
+    version = "20200110";
     src = fetchurl {
-      url = mirror://cpan/authors/id/S/SH/SHANCOCK/Perl-Tidy-20190915.tar.gz;
-      sha256 = "c236dfacbba115cfc3f2868006c8601e021fe97c13cd2170a49bf8d404cc701b";
+      url = "mirror://cpan/authors/id/S/SH/SHANCOCK/Perl-Tidy-${version}.tar.gz";
+      sha256 = "11l0isqr7ysrm1y07lrla0ns1x3wvjw8im4kk50rsh22iyw3mhf8";
     };
     meta = {
       description = "Indent and reformat perl scripts";
@@ -19245,7 +19249,7 @@ let
       sha256 = "0avk50kia78kxryh2whmaj5l18q2wvmkdyqyjsf6kwr4kgy6x3i7";
     };
     # https://rt.cpan.org/Public/Bug/Display.html?id=124815
-    NIX_CFLAGS_COMPILE = [ "-DHAS_VPRINTF" ];
+    NIX_CFLAGS_COMPILE = "-DHAS_VPRINTF";
   };
 
   TextUnidecode = buildPerlPackage {
@@ -19541,6 +19545,13 @@ let
       url = mirror://cpan/authors/id/G/GB/GBARR/TimeDate-2.30.tar.gz;
       sha256 = "11lf54akr9nbivqkjrhvkmfdgkbhw85sq0q4mak56n6bf542bgbm";
     };
+    patches = [
+      # https://rt.cpan.org/Public/Bug/Display.html?id=124509
+      (fetchpatch {
+        url = "https://github.com/atoomic/perl-TimeDate/commit/4b67ccbdc1846620470ca524a5f3e2afd7b33f66.patch";
+        sha256 = "1q37yw0b2pammvl0aana70nq7krqwhpcanqa11h2pg9sa9ls7q87";
+      })
+    ];
   };
 
   TimeDuration = buildPerlPackage {
@@ -20332,7 +20343,7 @@ let
     AUTOMATED_TESTING = false;
     buildInputs = [ pkgs.xorg.libxcb pkgs.xorg.xcbproto pkgs.xorg.xcbutil pkgs.xorg.xcbutilwm ExtUtilsDepends ExtUtilsPkgConfig TestDeep TestException XSObjectMagic ];
     propagatedBuildInputs = [ DataDump MouseXNativeTraits XMLDescent XMLSimple ];
-    NIX_CFLAGS_LINK = [ "-lxcb" "-lxcb-util" "-lxcb-xinerama" "-lxcb-icccm" ];
+    NIX_CFLAGS_LINK = "-lxcb -lxcb-util -lxcb-xinerama -lxcb-icccm";
     doCheck = false; # requires an X server
     meta = {
       description = "XCB bindings for X";
@@ -20609,7 +20620,7 @@ let
      };
      propagatedBuildInputs = [ XMLParser XMLSAX ];
      # Avoid creating perllocal.pod, which contains a timestamp
-     installTargets = "pure_install";
+     installTargets = [ "pure_install" ];
      meta = {
        description = "SAX Driver for Expat";
        license = with stdenv.lib.licenses; [ artistic1 gpl1Plus ];

@@ -75,8 +75,12 @@ in
 
   usr-include = callPackage ../os-specific/darwin/usr-include { };
 
-  inherit (callPackages ../os-specific/darwin/xcode { } )
-          xcode_8_1 xcode_8_2 xcode_9_1 xcode_9_2 xcode_9_4 xcode;
+  inherit (callPackages ../os-specific/darwin/xcode { })
+    xcode_8_1 xcode_8_2
+    xcode_9_1 xcode_9_2 xcode_9_4 xcode_9_4_1
+    xcode_10_2 xcode_10_2_1 xcode_10_3
+    xcode_11
+    xcode;
 
   inherit (pkgs.callPackages ../os-specific/darwin/cltools { } )
           Command_Line_Tools_for_Xcode_11_2 Command_Line_Tools_for_Xcode;
