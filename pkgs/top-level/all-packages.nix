@@ -25938,4 +25938,5 @@ in
 
   quartus-prime-lite = callPackage ../applications/editors/quartus-prime {};
 
+  sacd_extract = callPackage ../tools/audio/sacd_extract {};
 }
