@@ -113,12 +113,26 @@ mapAliases ({
   etcdctl = etcd; # added 2018-04-25
   exfat-utils = exfat;                  # 2015-09-11
   facette = throw "facette has been removed."; # added 2020-01-06
+  fetchFromGithub = throw "You meant fetchFromGitHub, with a capital H.";
   ffadoFull = ffado; # added 2018-05-01
   firefox-esr-wrapper = firefox-esr;  # 2016-01
   firefox-wrapper = firefox;          # 2016-01
   firefoxWrapper = firefox;           # 2015-09
+  firefox-esr-52           = firefoxPackages.firefox-esr-52; # 2020-02, remove after 20.03 branchoff
+  firefox-esr-52-unwrapped = firefoxPackages.firefox-esr-52; # 2020-02, remove after 20.03 branchoff
+  firefox-esr-60           = firefoxPackages.firefox-esr-60; # 2020-02, remove after 20.03 branchoff
+  firefox-esr-60-unwrapped = firefoxPackages.firefox-esr-60; # 2020-02, remove after 20.03 branchoff
+  icecat                   = firefoxPackages.icecat;         # 2020-02, remove after 20.03 branchoff
+  icecat-unwrapped         = firefoxPackages.icecat;         # 2020-02, remove after 20.03 branchoff
+  conkeror-unwrapped       = conkeror; # 2020-02, remove after 20.03 branchoff
+  conkeror                 = throw ''
+    Conkeror doesn't work with any secure firefox release.
+    Please move to some of the alternatives at http://conkeror.org/Alternatives
+  ''; # 2020-02, remove after 20.03 branchoff
+
   firestr = throw "firestr has been removed."; # added 2019-12-08
   flameGraph = flamegraph; # added 2018-04-25
+  foldingathome = fahclient; # added 2020-09-03
   font-awesome-ttf = font-awesome; # 2018-02-25
   # 2019-10-31
   fontconfig-ultimate = throw ''
@@ -335,6 +349,7 @@ mapAliases ({
   pinentry_gtk2 = pinentry-gtk2; # added 2019-10-14
   pinentry_qt = pinentry-qt; # added 2019-10-14
   pinentry_gnome = pinentry-gnome; # added 2019-10-14
+  pinentry_qt5 = pinentry-qt; # added 2020-02-11
   postgis = postgresqlPackages.postgis;
   # end
   ppl-address-book = throw "deprecated in 2019-05-02: abandoned by upstream.";
@@ -366,10 +381,21 @@ mapAliases ({
   ruby_2_2_9 = throw "deprecated 2018-0213: use a newer version of ruby";
   ruby_2_3_6 = throw "deprecated 2018-0213: use a newer version of ruby";
   ruby_2_3 = throw "deprecated 2019-09-06: use a newer version of ruby";
-  ruby_2_4_3 = throw "deprecated 2018-0213: use ruby_2_4 instead";
-  ruby_2_5_0 = throw "deprecated 2018-0213: use ruby_2_5 instead";
+  ruby_2_4_3 = throw "deprecated 2018-0213: use a newer version of ruby";
+  ruby_2_4 = throw "deprecated 2019-12: use a newer version of ruby";
+  ruby_2_5_0 = throw "deprecated 2018-0213: use a newer version of ruby";
+  rubyPackages_2_4 = throw "deprecated 2019-12: use a newer version of rubyPackages instead";
   rubygems = throw "deprecated 2016-03-02: rubygems is now bundled with ruby";
-  rxvt_unicode_with-plugins = rxvt_unicode-with-plugins; # added 2015-04-02
+  rxvt_unicode-with-plugins = rxvt-unicode; # added 2020-02-02
+  rxvt_unicode = rxvt-unicode-unwrapped; # added 2020-02-02
+  urxvt_autocomplete_all_the_things = rxvt-unicode-plugins.autocomplete-all-the-things; # added 2020-02-02
+  urxvt_perl = rxvt-unicode-plugins.perl; # added 2020-02-02
+  urxvt_perls = rxvt-unicode-plugins.perls; # added 2020-02-02
+  urxvt_tabbedex = rxvt-unicode-plugins.tabbedex; # added 2020-02-02
+  urxvt_font_size = rxvt-unicode-plugins.font-size; # added 2020-02-02
+  urxvt_theme_switch = rxvt-unicode-plugins.theme-switch; # added 2020-02-02
+  urxvt_vtwheel = rxvt-unicode-plugins.vtwheel; # added 2020-02-02
+  urxvt_bidi = rxvt-unicode-plugins.bidi; # added 2020-02-02
   s6Dns = s6-dns; # added 2018-07-23
   s6Networking = s6-networking; # added 2018-07-23
   s6LinuxUtils = s6-linux-utils; # added 2018-07-23
@@ -399,6 +425,30 @@ mapAliases ({
   smbclient = samba; # added 2018-04-25
   slim = throw "slim has been removed. Please use a different display-manager"; # added 2019-11-11
   slimThemes = throw "slimThemes has been removed because slim has been also"; # added 2019-11-11
+  sundials_3 = throw "removed 2020-02. outdated and no longer needed";
+
+  # added 2020-02-10
+  sourceHanSansPackages = {
+    japanese = source-han-sans;
+    korean = source-han-sans;
+    simplified-chinese = source-han-sans;
+    traditional-chinese = source-han-sans;
+  };
+  source-han-sans-japanese = source-han-sans;
+  source-han-sans-korean = source-han-sans;
+  source-han-sans-simplified-chinese = source-han-sans;
+  source-han-sans-traditional-chinese = source-han-sans;
+  sourceHanSerifPackages = {
+    japanese = source-han-serif;
+    korean = source-han-serif;
+    simplified-chinese = source-han-serif;
+    traditional-chinese = source-han-serif;
+  };
+  source-han-serif-japanese = source-han-serif;
+  source-han-serif-korean = source-han-serif;
+  source-han-serif-simplified-chinese = source-han-serif;
+  source-han-serif-traditional-chinese = source-han-serif;
+
   net_snmp = net-snmp; # added 2019-12-21
   spaceOrbit = space-orbit; # addewd 2016-05-23
   speech_tools = speech-tools; # added 2018-04-25
@@ -438,6 +488,7 @@ mapAliases ({
   tex-gyre-schola-math = tex-gyre-math.schola; # added 2018-04-03
   tex-gyre-termes-math = tex-gyre-math.termes; # added 2018-04-03
   tftp_hpa = tftp-hpa; # added 2015-04-03
+  tomcat85 = tomcat8; # added 2020-03-11
   torbrowser = tor-browser-bundle-bin; # added 2017-04-05
   transporter = throw "transporter has been removed. It was archived upstream, so it's considered abandoned.";
   trang = jing-trang; # added 2018-04-25
@@ -472,7 +523,7 @@ mapAliases ({
   morituri = whipper; # added 2018-09-13
   xfceUnstable = xfce4-14; # added 2019-09-17
   xfce4-14 = xfce;
-  xfce4-12 = xfce;
+  xfce4-12 = throw "xfce4-12 has been replaced by xfce4-14"; # added 2020-03-14
   x11 = xlibsWrapper; # added 2015-09
   xbmc = kodi; # added 2018-04-25
   xbmcPlain = kodiPlain; # added 2018-04-25
@@ -484,6 +535,7 @@ mapAliases ({
   xf86_input_multitouch = throw "xf86_input_multitouch has been removed from nixpkgs."; # added 2020-01-20
   xlibs = xorg; # added 2015-09
   xpraGtk3 = xpra; # added 2018-09-13
+  xv = xxv; # added 2020-02-22
   youtubeDL = youtube-dl;  # added 2014-10-26
   zdfmediathk = mediathekview; # added 2019-01-19
   gnome_user_docs = gnome-user-docs; # added 2019-11-20
@@ -545,6 +597,9 @@ mapAliases ({
   # added 2020-01-10
   tor-browser-unwrapped = throw "tor-browser-unwrapped was removed because it was out of date and inadequately maintained. Please use tor-browser-bundle-bin instead. See #77452.";
 
+  # added 2020-02-09
+  dina-font-pcf = dina-font;
+
     /* Cleanup before 20.09 */
   llvm_4 = throw ''
     The LLVM versions 3.5, 3.9 and 4.0 have been removed in NixOS 20.03
@@ -571,4 +626,6 @@ mapAliases ({
 
   dnscrypt-proxy = throw "dnscrypt-proxy has been removed. Please use dnscrypt-proxy2."; # added 2020-02-02
   sqldeveloper_18 = throw "sqldeveloper_18 is not maintained anymore!"; # added 2020-02-04
+
+  gcc-snapshot = throw "Marked as broken for >2 years, additionally this 'snapshot' pointed to a fairly old one from gcc7.";
 })

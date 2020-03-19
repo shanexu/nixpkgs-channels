@@ -154,7 +154,7 @@ services.xserver.displayManager.defaultSession = "xfce+icewm";
    </listitem>
    <listitem>
     <para>
-     The <literal>99-main.network</literal> file was removed. Maching all
+     The <literal>99-main.network</literal> file was removed. Matching all
      network interfaces caused many breakages, see
      <link xlink:href="https://github.com/NixOS/nixpkgs/pull/18962">#18962</link>
        and <link xlink:href="https://github.com/NixOS/nixpkgs/pull/71106">#71106</link>.
@@ -196,10 +196,10 @@ services.xserver.displayManager.defaultSession = "xfce+icewm";
    </listitem>
    <listitem>
     <para>
-     There is now only one Xfce package-set and module. This means attributes, <literal>xfce4-14</literal>
-     <literal>xfce4-12</literal>, and <literal>xfceUnstable</literal> all now point to the latest Xfce 4.14
-     packages. And in future NixOS releases will be the latest released version of Xfce available at the
-     time during the releases development (if viable).
+     There is now only one Xfce package-set and module. This means that attributes <literal>xfce4-14</literal>
+     and <literal>xfceUnstable</literal> all now point to the latest Xfce 4.14
+     packages. And in the future NixOS releases will be the latest released version of Xfce available at the
+     time of the release's development (if viable).
     </para>
    </listitem>
    <listitem>
@@ -235,7 +235,7 @@ services.xserver.displayManager.defaultSession = "xfce+icewm";
    <listitem>
     <para>
       The <literal>buildRustCrate</literal> infrastructure now produces <literal>lib</literal> outputs in addition to the <literal>out</literal> output.
-      This has led to drastically reduced closed sizes for some rust crates since development dependencies are now in the <literal>lib</literal> output.
+      This has led to drastically reduced closure sizes for some rust crates since development dependencies are now in the <literal>lib</literal> output.
     </para>
     </listitem>
    <listitem>
@@ -440,15 +440,19 @@ users.users.me =
    </listitem>
    <listitem>
     <para>
-      The <link linkend="opt-services.buildkite-agent.enable">Buildkite Agent</link>
-      module and corresponding packages have been updated to 3.x.
-      While doing so, the following options have been changed:
+      The <link linkend="opt-services.buildkite-agents">Buildkite
+      Agent</link> module and corresponding packages have been updated to
+      3.x, and to support multiple instances of the agent running at the
+      same time. This means you will have to rename
+      <literal>services.buildkite-agent</literal> to
+      <literal>services.buildkite-agents.&lt;name&gt;</literal>. Furthermore,
+      the following options have been changed:
     </para>
     <itemizedlist>
       <listitem>
        <para>
          <literal>services.buildkite-agent.meta-data</literal> has been renamed to
-         <link linkend="opt-services.buildkite-agent.tags">services.buildkite-agent.tags</link>,
+         <link linkend="opt-services.buildkite-agents">services.buildkite-agents.&lt;name&gt;.tags</link>,
          to match upstreams naming for 3.x.
          Its type has also changed - it now accepts an attrset of strings.
        </para>
@@ -464,13 +468,13 @@ users.users.me =
        <para>
          <literal>services.buildkite-agent.openssh.privateKeyPath</literal>
          has been renamed to
-         <link linkend="opt-services.buildkite-agent.privateSshKeyPath">buildkite-agent.privateSshKeyPath</link>,
+         <link linkend="opt-services.buildkite-agents">buildkite-agents.&lt;name&gt;.privateSshKeyPath</link>,
          as the whole <literal>openssh</literal> now only contained that single option.
        </para>
       </listitem>
       <listitem>
        <para>
-         <link linkend="opt-services.buildkite-agent.shell">services.buildkite-agent.shell</link>
+         <link linkend="opt-services.buildkite-agents">services.buildkite-agents.&lt;name&gt;.shell</link>
          has been introduced, allowing to specify a custom shell to be used.
        </para>
       </listitem>
@@ -615,6 +619,35 @@ auth required pam_succeed_if.so uid >= 1000 quiet
      <link xlink:href="https://www.oracle.com/technetwork/developer-tools/sql-developer/downloads/sqldev-relnotes-194-5908846.html">release notes</link>.
     </para>
    </listitem>
+   <listitem>
+    <para>
+     The <package>gcc-snapshot</package>-package has been removed. It's marked as broken for &gt;2 years and used to point
+     to a fairly old snapshot  from the <package>gcc7</package>-branch.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     The <citerefentry><refentrytitle>nixos-build-vms</refentrytitle><manvolnum>8</manvolnum>
+     </citerefentry>-script now uses the python test-driver.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     The <package>riot-web</package> package now accepts configuration overrides as an attribute set instead of a string.
+     A formerly used JSON configuration can be converted to an attribute set with <literal>builtins.fromJSON</literal>.
+    </para>
+    <para>
+     The new default configuration also disables automatic guest account registration and analytics to improve privacy.
+     The previous behavior can be restored by setting <literal>config.riot-web.conf = { disable_guests = false; piwik = true; }</literal>.
+    </para>
+   </listitem>
+   <listitem>
+     <para>
+       Stand-alone usage of <literal>Upower</literal> now requires
+       <option>services.upower.enable</option> instead of just installing into
+       <xref linkend="opt-environment.systemPackages"/>.
+     </para>
+   </listitem>
   </itemizedlist>
  </section>
 
@@ -655,10 +688,84 @@ auth required pam_succeed_if.so uid >= 1000 quiet
        now uses the short rather than full version string.
      </para>
    </listitem>
-    <listitem>
+   <listitem>
+    <para>
+     The ACME module has switched from simp-le to <link xlink:href="https://github.com/go-acme/lego">lego</link>
+     which allows us to support DNS-01 challenges and wildcard certificates. The following options have been added:
+     <link linkend="opt-security.acme.acceptTerms">security.acme.acceptTerms</link>,
+     <link linkend="opt-security.acme.certs">security.acme.certs.&lt;name&gt;.dnsProvider</link>,
+     <link linkend="opt-security.acme.certs">security.acme.certs.&lt;name&gt;.credentialsFile</link>,
+     <link linkend="opt-security.acme.certs">security.acme.certs.&lt;name&gt;.dnsPropagationCheck</link>.
+     As well as this, the options <literal>security.acme.acceptTerms</literal> and either
+     <literal>security.acme.email</literal> or <literal>security.acme.certs.&lt;name&gt;.email</literal>
+     must be set in order to use the ACME module.
+     Certificates will be regenerated anew on the next renewal date. The credentials for simp-le are
+     preserved and thus it is possible to roll back to previous versions without breaking certificate
+     generation.
+    </para>
+   </listitem>
+   <listitem>
     <para>
     It is now possible to unlock LUKS-Encrypted file systems using a FIDO2 token
     via <option>boot.initrd.luks.fido2Support</option>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Predicatbly named network-interfaces get renamed in stage-1. This means that it's possible
+     to use the proper interface name for e.g. dropbear-setups.
+    </para>
+    <para>
+     For further reference, please read <link xlink:href="https://github.com/NixOS/nixpkgs/pull/68953">#68953</link> or the corresponding <link xlink:href="https://discourse.nixos.org/t/predictable-network-interface-names-in-initrd/4055">discourse thread</link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     The <package>matrix-synapse</package>-package has been updated to
+     <link xlink:href="https://github.com/matrix-org/synapse/releases/tag/v1.11.1">v1.11.1</link>.
+     Due to <link xlink:href="https://github.com/matrix-org/synapse/releases/tag/v1.10.0rc1">stricter requirements</link>
+     for database configuration when using <package>postgresql</package>, the automated database setup
+     of the module has been removed to avoid any further edge-cases.
+    </para>
+    <para>
+     <package>matrix-synapse</package> expects <literal>postgresql</literal>-databases to have the options
+     <literal>LC_COLLATE</literal> and <literal>LC_CTYPE</literal> set to
+     <link xlink:href="https://www.postgresql.org/docs/12/locale.html"><literal>'C'</literal></link> which basically
+     instructs <literal>postgresql</literal> to ignore any locale-based preferences.
+    </para>
+    <para>
+     Depending on your setup, you need to incorporate one of the following changes in your setup to
+     upgrade to 20.03:
+     <itemizedlist>
+      <listitem><para>If you use <literal>sqlite3</literal> you don't need to do anything.</para></listitem>
+      <listitem><para>If you use <literal>postgresql</literal> on a different server, you don't need
+       to change anything as well since this module was never designed to configure remote databases.
+      </para></listitem>
+      <listitem><para>If you use <literal>postgresql</literal> and configured your synapse initially on
+       <literal>19.09</literal> or older, you simply need to enable <package>postgresql</package>-support
+        explicitly:
+<programlisting>{ ... }: {
+  services.matrix-synapse = {
+    <link linkend="opt-services.matrix-synapse.enable">enable</link> = true;
+    /* and all the other config you've defined here */
+  };
+  <link linkend="opt-services.postgresql.enable">services.postgresql.enable</link> = true;
+}</programlisting>
+      </para></listitem>
+      <listitem><para>If you deploy a fresh <package>matrix-synapse</package>, you need to configure
+       the database yourself (e.g. by using the
+       <link linkend="opt-services.postgresql.initialScript">services.postgresql.initialScript</link>
+       option). An example for this can be found in the
+       <link linkend="module-services-matrix">documentation of the Matrix module</link>.
+      </para></listitem>
+      <listitem><para>If you initially deployed your <package>matrix-synapse</package> on
+       <literal>nixos-unstable</literal> <emphasis>after</emphasis> the <literal>19.09</literal>-release,
+       your database is misconfigured due to a regression in NixOS. For now, <package>matrix-synapse</package> will
+       startup with a warning, but it's recommended to reconfigure the database to set the values
+       <literal>LC_COLLATE</literal> and <literal>LC_CTYPE</literal> to
+       <link xlink:href="https://www.postgresql.org/docs/12/locale.html"><literal>'C'</literal></link>.
+      </para></listitem>
+     </itemizedlist>
     </para>
    </listitem>
   </itemizedlist>
